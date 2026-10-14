@@ -79,6 +79,7 @@ typedef enum { STATEMENT_INSERT, STATEMENT_SELECT } StatementType;
 
 typedef struct {
   StatementType type;
+  Row row_to_insert; // used by insert statement not more
 } Statement;
 
 PrepareResult prepare_statement(InputBuffer* input_buffer, Statement* statement)
