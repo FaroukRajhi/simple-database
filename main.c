@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "dep.h"
+#include "in_memory.h"
 
 
 
