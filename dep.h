@@ -1,4 +1,7 @@
-
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include "in_memory.h"
 // Defining input buffer
 
 typedef struct 
@@ -82,33 +85,25 @@ typedef struct {
   Row row_to_insert; // used by insert statement not more
 } Statement;
 
-PrepareResult prepare_statement(InputBuffer* input_buffer, Statement* statement)
-{
-    if(strcmp(input_buffer->buffer, "insert") == 0)
-    {
-
-        statement->type = STATEMENT_INSERT;
-        return PREPARE_SUCCESS;
-
+PrepareResult prepare_statement(InputBuffer* input_buffer,
+                                Statement* statement) {
+  if (strncmp(input_buffer->buffer, "insert", 6) == 0) {
+    statement->type = STATEMENT_INSERT;
+    int args_assigned = sscanf(
+	input_buffer->buffer, "insert %d %s %s", &(statement->row_to_insert.id),
+	statement->row_to_insert.username, statement->row_to_insert.email
+	);
+    if (args_assigned < 3) {
+	return PREPARE_SYNTAX_ERROR;
     }
-
-    if (strcmp(input_buffer->buffer, "select") == 0) {
+    return PREPARE_SUCCESS;
+  }
+  if (strcmp(input_buffer->buffer, "select") == 0) {
     statement->type = STATEMENT_SELECT;
     return PREPARE_SUCCESS;
-    }
+  }
 
-    return PREPARE_UNRECOGNIZED_STATEMENT;
+  return PREPARE_UNRECOGNIZED_STATEMENT;
 }
 
-void execute_statement(Statement* statement)
-{
-    switch(statement->type)
-    {
-        case(STATEMENT_INSERT):
-          printf("We would do an insert.\n");
-          break;
-        case(STATEMENT_SELECT):
-          printf("We would do a select.\n");
-          break;
-    }
-}
+
